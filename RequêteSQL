@@ -1,0 +1,16 @@
+USE dataengineer;
+
+WITH number_loc AS (
+SELECT customer_id, COUNT(rental_id) AS rental_number
+FROM rental
+GROUP BY customer_id
+ORDER BY rental_number DESC
+LIMIT 1)
+
+SELECT c.last_name, c.first_name, n.rental_number, 
+		CONCAT(a.address, " ", a.postal_code, " ", a.city) AS adresse_postale, a.latitude, a.longitude
+FROM customer c 
+RIGHT JOIN number_loc n 
+ON c.customer_id = n.customer_id
+LEFT JOIN address a
+ON c.address_id= a.address_id
